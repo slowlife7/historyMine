@@ -1,0 +1,15 @@
+a {
+  text-decoration: none;
+  padding: 1rem;
+  color: white;
+  font-size: 0.8rem;
+}
+
+header {
+  position: sticky;
+  width: 100%;
+  top: 0;
+  height: 50px;
+  background: #555;
+  box-shadow: 1px 1px 10px 0 rgba(0, 0, 0, 0.3);
+}
