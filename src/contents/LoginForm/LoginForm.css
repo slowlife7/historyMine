@@ -1,0 +1,46 @@
+.login--container {
+  position: relative;
+  width: 100%;
+  height: calc(100% - 50px);
+  background: #cccccc;
+}
+
+.login--form {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  top: 50%;
+  height: 300px;
+  margin-top: -150px;
+  background: #ffffff;
+}
+
+.login--header,
+.login--content {
+  width: 60%;
+  margin: 0 auto;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.login--header {
+  text-align: left;
+}
+
+.form--input > input {
+  width: 100%;
+  padding: 4px 10px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+.form--button > input {
+  width: 100%;
+  background: #337ab7;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border: none;
+  padding: 8px;
+  color: #ffffff;
+}

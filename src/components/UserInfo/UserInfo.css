@@ -6,3 +6,7 @@
   align-items: center;
   justify-content: center;
 }
+
+.UserInfo span {
+  font-size: 0.8rem;
+}

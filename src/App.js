@@ -2,7 +2,8 @@ import React, { Component, Fragment } from "react";
 import {
   BrowserRouter as Router,
   Switch,
-  Route
+  Route,
+  useLocation
 } from "react-router-dom";
 import "./App.css";
 import {
@@ -14,101 +15,154 @@ import {
   Section
 } from "./components";
 
+import { LoginContainer, LogoutContainer } from "./contents";
+
+import Store from "./authoContext";
+
+const routes = [
+  {
+    path: "/test2",
+    component: () => (
+      <Section>
+        <Test2 />
+      </Section>
+    )
+  },
+  {
+    path: "/test3",
+    component: () => (
+      <Section>
+        <Test3 />
+      </Section>
+    )
+  },
+  {
+    path: "/test4",
+    component: () => (
+      <Section>
+        <Test4 />
+      </Section>
+    )
+  }
+];
+
 class App extends Component {
-  state = {
-    showPopup: false
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      showPopup: false,
+      isAuth: false,
+      onSubmit: this.onSubmit,
+      onLogout: this.onLogout
+    };
+  }
+
+  componentDidMount() {
+    let authenticated = false;
+    const auth = sessionStorage.getItem("isAuth");
+    if (auth) {
+      authenticated = auth === "true" ? true : false;
+    }
+    this.setState({
+      isAuth: authenticated
+    });
+  }
 
   handlePoupNav = () => {
-    console.log("onclick");
     this.setState({
       showPopup: !this.state.showPopup
     });
     //console.log("state:", this.state.showPopup);
   };
 
+  handleAuthenticate = () => {
+    this.setState({
+      isAuth: true
+    });
+  };
+
+  onSubmit = ({ username }) => {
+    this.setState({
+      isAuth: true
+    });
+
+    sessionStorage.setItem("isAuth", true);
+  };
+
+  onLogout = () => {
+    fetch("http://localhost:7001/auth/logout").then(response =>
+      response.json()
+    );
+
+    this.setState({
+      isAuth: false
+    });
+
+    sessionStorage.setItem("isAuth", false);
+  };
+
   render() {
     return (
-      <Fragment>
-        <Router>
-          <Header>
-            <NavigatorButton onClick={this.handlePoupNav} />
-            <UserInfo />
-          </Header>
-        
-          <Darkness
-            showing={this.state.showPopup}
-            onClick={this.handlePoupNav}
-          ></Darkness>
-         
-          <Navigator showing={this.state.showPopup}></Navigator>
+      <Store.Provider value={this.state}>
+        <Fragment>
+          <Router>
+            <Header>
+              <NavigatorButton onClick={this.handlePoupNav} />
+              <UserInfo auth={this.state.isAuth} />
+            </Header>
+
+            <Darkness
+              showing={this.state.showPopup}
+              onClick={this.handlePoupNav}
+            ></Darkness>
+
+            <Navigator showing={this.state.showPopup}></Navigator>
             <Switch>
+              <Route path="/login" component={LoginContainer}></Route>
+              <Route path="/logout" component={LogoutContainer}></Route>
+              <Route path="/signup"></Route>
               <Route exact path="/">
                 <Section></Section>
               </Route>
 
-              <Route exact path="/test1">
-                <Section>
-                  <Test1 />
-                </Section>
-              </Route>
-              <Route exact path="/test2">
-                <Section>
-                  <Test2 />
-                </Section>
-              </Route>
-              <Route exact path="/test3">
-                <Section>
-                  <Test3 />
-                </Section>
-              </Route>
-              <Route exact path="/test4">
-                <Section>
-                  <Test4 />
-                </Section>
-              </Route>
-              <Route exact path="/login">
-                <Section>
-                  <Login />
-                </Section>
-              </Route>
+              {routes.map((route, i) => (
+                <Route path={route.path} key={i}>
+                  {route.component}
+                </Route>
+              ))}
 
-              <Route exact path="/signup">
-                <Section>
-                  <Signup />
-                </Section>
+              <Route path="*">
+                <NoMatch />
               </Route>
             </Switch>
           </Router>
-      </Fragment>
+        </Fragment>
+      </Store.Provider>
     );
   }
 }
 
-function Login() {
-  return <div>Login</div>
-}
-
-function Signup() {
-  return <div>
-    <h1>하하하하하</h1>
-  </div>
-}
-
-function Test1() {
-  return <div>test1</div>
+function NoMatch() {
+  let location = useLocation();
+  return (
+    <div>
+      <h3>
+        No match for <code>{location.pathname}</code>
+      </h3>
+    </div>
+  );
 }
 
 function Test2() {
-  return <div>test2</div>
+  return <div>test2</div>;
 }
 
 function Test3() {
-  return <div>test3</div>
+  return <div>test3</div>;
 }
 
 function Test4() {
-  return <div>test4</div>
+  return <div>test4</div>;
 }
 
 export default App;
